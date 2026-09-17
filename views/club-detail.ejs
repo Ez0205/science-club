@@ -1,0 +1,254 @@
+<%- include('partials/header') %>
+
+<!-- 社团头部横幅 -->
+<section class="club-hero">
+  <div class="club-hero-bg">
+    <% if (club.cover_image) { %>
+      <img src="<%= club.cover_image %>" alt="<%= club.name %>">
+    <% } %>
+  </div>
+  <div class="club-hero-overlay">
+    <div class="container">
+      <div class="club-hero-content">
+        <div class="club-hero-logo"><%= club.logo_image || '🎯' %></div>
+        <div>
+          <h1 class="club-hero-title"><%= club.name %></h1>
+          <p class="club-hero-slogan"><%= club.slogan %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:40px;">
+  <div class="container">
+    <div class="club-detail-layout">
+      <!-- 左侧内容 -->
+      <div class="club-detail-main">
+        <!-- 社团简介 -->
+        <div class="about-section">
+          <h2 class="about-title">
+            <span class="about-title-icon">📖</span>
+            社团简介
+          </h2>
+          <div class="about-content">
+            <p style="white-space:pre-wrap;"><%= club.description %></p>
+          </div>
+        </div>
+        
+        <!-- 社团目标 -->
+        <div class="about-section">
+          <h2 class="about-title">
+            <span class="about-title-icon">🎯</span>
+            社团目标
+          </h2>
+          <div class="about-content">
+            <p style="white-space:pre-wrap;"><%= club.goal %></p>
+          </div>
+        </div>
+        
+        <!-- 指导教师 -->
+        <div class="about-section">
+          <h2 class="about-title">
+            <span class="about-title-icon">👨‍🏫</span>
+            指导教师
+          </h2>
+          <div class="about-content">
+            <p><%= club.teachers || '专业教师团队' %></p>
+          </div>
+        </div>
+        
+        <!-- 作品展示 -->
+        <% if (works && works.length > 0) { %>
+        <div class="about-section">
+          <h2 class="about-title">
+            <span class="about-title-icon">🔬</span>
+            作品展示
+          </h2>
+          <div class="works-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
+            <% works.forEach(function(work) { %>
+              <a href="/works/<%= work.id %>" class="work-card" style="text-decoration:none;color:inherit;">
+                <div class="work-card-image">
+                  <% if (work.cover_image) { %>
+                    <img src="<%= work.cover_image %>" alt="<%= work.title %>">
+                  <% } else { %>
+                    <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#F3F4F6;font-size:40px;">🔬</div>
+                  <% } %>
+                  <span class="work-card-badge">
+                    <span class="tag tag-<%= work.category %>"><%= work.category %></span>
+                  </span>
+                </div>
+                <div class="work-card-body">
+                  <div class="work-card-title"><%= work.title %></div>
+                  <div class="work-card-meta">
+                    <span class="work-card-author">👤 <%= work.author %></span>
+                    <span>❤️ <%= work.likes || 0 %></span>
+                  </div>
+                </div>
+              </a>
+            <% }) %>
+          </div>
+          <div style="text-align:center;margin-top:20px;">
+            <a href="/works" class="btn btn-outline">查看更多作品 →</a>
+          </div>
+        </div>
+        <% } %>
+      </div>
+      
+      <!-- 右侧侧边栏 -->
+      <div class="club-detail-sidebar">
+        <div class="about-section" style="padding:25px;">
+          <h3 style="font-size:18px;margin-bottom:15px;padding-bottom:12px;border-bottom:2px solid var(--primary);display:inline-block;">📋 社团信息</h3>
+          <ul style="list-style:none;padding:0;">
+            <li style="padding:10px 0;border-bottom:1px solid var(--border);">
+              <span style="color:var(--text-light);font-size:13px;">社团名称</span>
+              <p style="font-weight:600;margin-top:4px;"><%= club.name %></p>
+            </li>
+            <li style="padding:10px 0;border-bottom:1px solid var(--border);">
+              <span style="color:var(--text-light);font-size:13px;">社团口号</span>
+              <p style="color:var(--primary);font-weight:500;margin-top:4px;"><%= club.slogan %></p>
+            </li>
+            <li style="padding:10px 0;border-bottom:1px solid var(--border);">
+              <span style="color:var(--text-light);font-size:13px;">指导老师</span>
+              <p style="margin-top:4px;"><%= club.teachers || '多位专业老师' %></p>
+            </li>
+            <li style="padding:10px 0;">
+              <span style="color:var(--text-light);font-size:13px;">加入方式</span>
+              <p style="margin-top:4px;font-size:14px;">联系指导老师或前往社团活动室报名</p>
+            </li>
+          </ul>
+          
+          <a href="/works" class="btn btn-primary" style="width:100%;margin-top:15px;">
+            🔬 浏览实验作品
+          </a>
+          <a href="/messages" class="btn btn-outline" style="width:100%;margin-top:10px;">
+            💬 留言咨询
+          </a>
+        </div>
+        
+        <!-- 返回列表 -->
+        <a href="/about" style="display:block;text-align:center;margin-top:15px;color:var(--text-light);font-size:14px;">
+          ← 返回社团列表
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.club-hero {
+  position: relative;
+  height: 320px;
+  overflow: hidden;
+}
+
+.club-hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.club-hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.club-hero-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.85), rgba(16, 185, 129, 0.85));
+}
+
+.club-hero-overlay {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.club-hero-content {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  color: white;
+}
+
+.club-hero-logo {
+  width: 100px;
+  height: 100px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 52px;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.club-hero-title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.club-hero-slogan {
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+.club-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 30px;
+}
+
+.club-detail-main {
+  min-width: 0;
+}
+
+.club-detail-sidebar {
+  position: sticky;
+  top: 120px;
+  align-self: flex-start;
+}
+
+@media (max-width: 900px) {
+  .club-detail-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .club-detail-sidebar {
+    position: static;
+  }
+  
+  .club-hero {
+    height: 250px;
+  }
+  
+  .club-hero-logo {
+    width: 70px;
+    height: 70px;
+    font-size: 36px;
+    border-radius: 18px;
+  }
+  
+  .club-hero-title {
+    font-size: 26px;
+  }
+  
+  .club-hero-slogan {
+    font-size: 15px;
+  }
+}
+</style>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> - 管理后台</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <%- include('partials/sidebar') %>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="admin-topbar-title"><%= title %></div>
+      <div class="admin-topbar-right">
+        <a href="/" target="_blank" style="color:#6B7280;text-decoration:none;">查看网站</a>
+        <div class="admin-user-info">
+          <div class="admin-avatar"><%= user.real_name ? user.real_name[0] : 'A' %></div>
+          <span style="font-size:14px;"><%= user.real_name || user.username %></span>
+        </div>
+        <a href="/logout" style="color:#6B7280;text-decoration:none;font-size:14px;">退出</a>
+      </div>
+    </div>
+    <div class="admin-content">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title">留言列表</div>
+          <div style="font-size:13px;color:#6B7280;">共 <%= messages.length %> 条留言</div>
+        </div>
+        <div class="admin-card-body" style="padding:0;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>姓名</th>
+                <th>邮箱</th>
+                <th>留言内容</th>
+                <th>回复</th>
+                <th>时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% messages.forEach(function(msg) { %>
+              <tr>
+                <td><%= msg.id %></td>
+                <td><%= msg.name %></td>
+                <td style="font-size:12px;color:#6B7280;"><%= msg.email || '-' %></td>
+                <td style="max-width:250px;">
+                  <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= msg.message %></div>
+                </td>
+                <td style="max-width:200px;">
+                  <% if (msg.reply) { %>
+                    <span class="status-badge status-approved">已回复</span>
+                    <div style="font-size:12px;color:#6B7280;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= msg.reply %></div>
+                  <% } else { %>
+                    <span style="color:#F59E0B;font-size:12px;">待回复</span>
+                  <% } %>
+                </td>
+                <td style="font-size:12px;color:#6B7280;"><%= msg.created_at %></td>
+                <td>
+                  <div class="actions">
+                    <button type="button" class="action-btn action-btn-edit" onclick="openReplyModal(<%= msg.id %>, '<%= msg.reply ? msg.reply.replace(/'/g, "\\'") : '' %>')">回复</button>
+                    <form method="POST" action="/admin/messages/<%= msg.id %>/delete" style="display:inline;" onsubmit="return confirm('确定删除该留言吗？')">
+                      <button type="submit" class="action-btn action-btn-delete">删除</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              <% }); %>
+              <% if (messages.length === 0) { %>
+              <tr>
+                <td colspan="7" style="text-align:center;color:#9CA3AF;padding:40px;">暂无留言</td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 回复模态框 -->
+<div class="admin-modal" id="replyModal">
+  <div class="admin-modal-content">
+    <div class="admin-modal-header">
+      <div class="admin-modal-title">回复留言</div>
+      <button class="admin-modal-close" onclick="closeReplyModal()">&times;</button>
+    </div>
+    <form method="POST" id="replyForm">
+      <div class="admin-form-group">
+        <label>回复内容</label>
+        <textarea name="reply" id="replyContent" rows="5" placeholder="请输入回复内容" required></textarea>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button type="button" onclick="closeReplyModal()" style="padding:8px 16px;background:#E5E7EB;color:#374151;border:none;border-radius:6px;cursor:pointer;">取消</button>
+        <button type="submit" style="padding:8px 16px;background:#4F46E5;color:white;border:none;border-radius:6px;cursor:pointer;">发送回复</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openReplyModal(id, currentReply) {
+  document.getElementById('replyForm').action = '/admin/messages/' + id + '/reply';
+  document.getElementById('replyContent').value = currentReply || '';
+  document.getElementById('replyModal').classList.add('active');
+}
+
+function closeReplyModal() {
+  document.getElementById('replyModal').classList.remove('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<div class="admin-sidebar">
+  <div class="admin-sidebar-header">
+    <div class="admin-sidebar-logo">🔬</div>
+    <div>
+      <div class="admin-sidebar-title">科学社团</div>
+      <div class="admin-sidebar-subtitle">管理后台</div>
+    </div>
+  </div>
+
+  <nav class="admin-nav">
+    <a href="/admin" class="admin-nav-item <%= activeNav === 'dashboard' ? 'active' : '' %>">
+      <span class="admin-nav-icon">📊</span>
+      <span>仪表盘</span>
+    </a>
+
+    <div class="admin-nav-section">内容管理</div>
+
+    <a href="/admin/works" class="admin-nav-item <%= activeNav === 'works' ? 'active' : '' %>">
+      <span class="admin-nav-icon">📝</span>
+      <span>作品管理</span>
+    </a>
+
+    <a href="/admin/comments" class="admin-nav-item <%= activeNav === 'comments' ? 'active' : '' %>">
+      <span class="admin-nav-icon">💬</span>
+      <span>评论管理</span>
+    </a>
+
+    <a href="/admin/votes" class="admin-nav-item <%= activeNav === 'votes' ? 'active' : '' %>">
+      <span class="admin-nav-icon">🗳️</span>
+      <span>投票管理</span>
+    </a>
+
+    <a href="/admin/quiz" class="admin-nav-item <%= activeNav === 'quiz' ? 'active' : '' %>">
+      <span class="admin-nav-icon">❓</span>
+      <span>问答管理</span>
+    </a>
+
+    <a href="/admin/messages" class="admin-nav-item <%= activeNav === 'messages' ? 'active' : '' %>">
+      <span class="admin-nav-icon">📮</span>
+      <span>留言管理</span>
+    </a>
+
+    <div class="admin-nav-section">资源管理</div>
+
+    <a href="/admin/clubs" class="admin-nav-item <%= activeNav === 'clubs' ? 'active' : '' %>">
+      <span class="admin-nav-icon">🏫</span>
+      <span>社团管理</span>
+    </a>
+
+    <a href="/admin/videos" class="admin-nav-item <%= activeNav === 'videos' ? 'active' : '' %>">
+      <span class="admin-nav-icon">🎬</span>
+      <span>视频管理</span>
+    </a>
+
+    <a href="/admin/events" class="admin-nav-item <%= activeNav === 'events' ? 'active' : '' %>">
+      <span class="admin-nav-icon">📅</span>
+      <span>活动荣誉</span>
+    </a>
+
+    <div class="admin-nav-section">系统管理</div>
+
+    <a href="/admin/pages" class="admin-nav-item <%= activeNav === 'pages' ? 'active' : '' %>">
+      <span class="admin-nav-icon">🎨</span>
+      <span>页面编辑</span>
+    </a>
+
+    <a href="/admin/users" class="admin-nav-item <%= activeNav === 'users' ? 'active' : '' %>">
+      <span class="admin-nav-icon">👥</span>
+      <span>用户管理</span>
+    </a>
+
+    <a href="/admin/logs" class="admin-nav-item <%= activeNav === 'logs' ? 'active' : '' %>">
+      <span class="admin-nav-icon">📋</span>
+      <span>操作日志</span>
+    </a>
+  </nav>
+</div>

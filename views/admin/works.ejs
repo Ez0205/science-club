@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> - 管理后台</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <%- include('partials/sidebar') %>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="admin-topbar-title"><%= title %></div>
+      <div class="admin-topbar-right">
+        <a href="/" target="_blank" style="color:#6B7280;text-decoration:none;">查看网站</a>
+        <div class="admin-user-info">
+          <div class="admin-avatar"><%= user.real_name ? user.real_name[0] : 'A' %></div>
+          <span style="font-size:14px;"><%= user.real_name || user.username %></span>
+        </div>
+        <a href="/logout" style="color:#6B7280;text-decoration:none;font-size:14px;">退出</a>
+      </div>
+    </div>
+    <div class="admin-content">
+      <!-- 筛选栏 -->
+      <div class="admin-card">
+        <div class="admin-card-body">
+          <form method="GET" action="/admin/works" class="admin-filter-bar">
+            <select name="status">
+              <option value="">全部状态</option>
+              <option value="pending" <%= currentStatus === 'pending' ? 'selected' : '' %>>待审核</option>
+              <option value="published" <%= currentStatus === 'published' ? 'selected' : '' %>>已发布</option>
+              <option value="rejected" <%= currentStatus === 'rejected' ? 'selected' : '' %>>已驳回</option>
+            </select>
+            <input type="text" name="keyword" placeholder="搜索标题/作者" value="<%= keyword %>" style="width:240px;">
+            <button type="submit">搜索</button>
+            <a href="/admin/works" style="padding:8px 16px;background:#9CA3AF;color:white;border:none;border-radius:6px;cursor:pointer;text-decoration:none;font-size:14px;">重置</a>
+          </form>
+        </div>
+      </div>
+
+      <!-- 作品列表 -->
+      <div class="admin-card">
+        <div class="admin-card-body">
+          <!-- 批量操作 -->
+          <form method="POST" action="/admin/works/batch" id="batchForm">
+            <div class="batch-actions">
+              <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+              <label for="selectAll" style="font-size:13px;color:#374151;">全选</label>
+              <select name="action" id="batchAction">
+                <option value="">批量操作</option>
+                <option value="approve">批量审核</option>
+                <option value="feature">批量精选</option>
+                <option value="delete">批量删除</option>
+              </select>
+              <button type="button" onclick="executeBatch()">执行</button>
+            </div>
+
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width:40px;"></th>
+                  <th>ID</th>
+                  <th>标题</th>
+                  <th>作者</th>
+                  <th>分类</th>
+                  <th>状态</th>
+                  <th>上传者</th>
+                  <th>时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% works.forEach(function(work) { %>
+                <tr>
+                  <td><input type="checkbox" name="ids" value="<%= work.id %>" class="work-checkbox"></td>
+                  <td><%= work.id %></td>
+                  <td style="max-width:200px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <% if (work.cover_image) { %>
+                        <img src="<%= work.cover_image %>" style="width:40px;height:40px;object-fit:cover;border-radius:4px;">
+                      <% } %>
+                      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= work.title %></span>
+                      <% if (work.is_featured) { %>
+                        <span style="color:#F59E0B;font-size:12px;">⭐精选</span>
+                      <% } %>
+                    </div>
+                  </td>
+                  <td><%= work.author %></td>
+                  <td><%= work.category %></td>
+                  <td>
+                    <span class="status-badge <%= work.status === 'published' ? 'status-published' : work.status === 'pending' ? 'status-pending' : 'status-rejected' %>">
+                      <%= work.status === 'published' ? '已发布' : work.status === 'pending' ? '待审核' : '已驳回' %>
+                    </span>
+                  </td>
+                  <td><%= work.uploader_name || '-' %></td>
+                  <td style="font-size:12px;color:#6B7280;"><%= work.created_at %></td>
+                  <td>
+                    <div class="actions">
+                      <% if (work.status === 'pending') { %>
+                        <form method="POST" action="/admin/works/<%= work.id %>/approve" style="display:inline;">
+                          <button type="submit" class="action-btn action-btn-approve">通过</button>
+                        </form>
+                        <form method="POST" action="/admin/works/<%= work.id %>/reject" style="display:inline;" onsubmit="return confirmReject(this)">
+                          <button type="submit" class="action-btn action-btn-reject">驳回</button>
+                        </form>
+                      <% } %>
+                      <a href="/admin/works/<%= work.id %>/edit" class="action-btn action-btn-edit" style="text-decoration:none;">编辑</a>
+                      <form method="POST" action="/admin/works/<%= work.id %>/feature" style="display:inline;">
+                        <button type="submit" class="action-btn" style="background:#FEF3C7;color:#92400E;">
+                          <%= work.is_featured ? '取消精选' : '设为精选' %>
+                        </button>
+                      </form>
+                      <form method="POST" action="/admin/works/<%= work.id %>/delete" style="display:inline;" onsubmit="return confirm('确定删除该作品吗？')">
+                        <button type="submit" class="action-btn action-btn-delete">删除</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                <% }); %>
+                <% if (works.length === 0) { %>
+                <tr>
+                  <td colspan="9" style="text-align:center;color:#9CA3AF;padding:40px;">暂无作品数据</td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function toggleSelectAll() {
+  const checkAll = document.getElementById('selectAll').checked;
+  document.querySelectorAll('.work-checkbox').forEach(cb => cb.checked = checkAll);
+}
+
+function executeBatch() {
+  const action = document.getElementById('batchAction').value;
+  const checked = document.querySelectorAll('.work-checkbox:checked').length;
+  if (!action) {
+    alert('请选择批量操作');
+    return;
+  }
+  if (checked === 0) {
+    alert('请至少选择一个作品');
+    return;
+  }
+  if (action === 'delete' && !confirm('确定删除选中的 ' + checked + ' 个作品吗？')) {
+    return;
+  }
+  document.getElementById('batchForm').submit();
+}
+
+function confirmReject(form) {
+  const reason = prompt('请输入驳回原因：');
+  if (reason === null) return false;
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'reason';
+  input.value = reason;
+  form.appendChild(input);
+  return true;
+}
+</script>
+</body>
+</html>

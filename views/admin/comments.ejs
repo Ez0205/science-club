@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> - 管理后台</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <%- include('partials/sidebar') %>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="admin-topbar-title"><%= title %></div>
+      <div class="admin-topbar-right">
+        <a href="/" target="_blank" style="color:#6B7280;text-decoration:none;">查看网站</a>
+        <div class="admin-user-info">
+          <div class="admin-avatar"><%= user.real_name ? user.real_name[0] : 'A' %></div>
+          <span style="font-size:14px;"><%= user.real_name || user.username %></span>
+        </div>
+        <a href="/logout" style="color:#6B7280;text-decoration:none;font-size:14px;">退出</a>
+      </div>
+    </div>
+    <div class="admin-content">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title">评论列表</div>
+          <div style="font-size:13px;color:#6B7280;">共 <%= comments.length %> 条评论</div>
+        </div>
+        <div class="admin-card-body" style="padding:0;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>作品</th>
+                <th>评论者</th>
+                <th>评论内容</th>
+                <th>状态</th>
+                <th>时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% comments.forEach(function(comment) { %>
+              <tr>
+                <td><%= comment.id %></td>
+                <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                  <%= comment.work_title || '（已删除）' %>
+                </td>
+                <td><%= comment.user_name || '匿名' %></td>
+                <td style="max-width:300px;">
+                  <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= comment.content %></div>
+                </td>
+                <td>
+                  <span class="status-badge status-approved">正常</span>
+                </td>
+                <td style="font-size:12px;color:#6B7280;"><%= comment.created_at %></td>
+                <td>
+                  <div class="actions">
+                    <form method="POST" action="/admin/comments/<%= comment.id %>/delete" style="display:inline;" onsubmit="return confirm('确定删除该评论吗？')">
+                      <button type="submit" class="action-btn action-btn-delete">删除</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              <% }); %>
+              <% if (comments.length === 0) { %>
+              <tr>
+                <td colspan="7" style="text-align:center;color:#9CA3AF;padding:40px;">暂无评论</td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

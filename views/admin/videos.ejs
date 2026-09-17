@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> - 管理后台</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <%- include('partials/sidebar') %>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="admin-topbar-title"><%= title %></div>
+      <div class="admin-topbar-right">
+        <a href="/" target="_blank" style="color:#6B7280;text-decoration:none;">查看网站</a>
+        <div class="admin-user-info">
+          <div class="admin-avatar"><%= user.real_name ? user.real_name[0] : 'A' %></div>
+          <span style="font-size:14px;"><%= user.real_name || user.username %></span>
+        </div>
+        <a href="/logout" style="color:#6B7280;text-decoration:none;font-size:14px;">退出</a>
+      </div>
+    </div>
+    <div class="admin-content">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title">视频列表</div>
+          <div style="font-size:13px;color:#6B7280;">共 <%= videos.length %> 个视频</div>
+        </div>
+        <div class="admin-card-body" style="padding:0;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>封面</th>
+                <th>标题</th>
+                <th>分类</th>
+                <th>视频</th>
+                <th>上传时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% videos.forEach(function(video) { %>
+              <tr>
+                <td><%= video.id %></td>
+                <td>
+                  <% if (video.thumbnail) { %>
+                    <img src="<%= video.thumbnail %>" style="width:60px;height:40px;object-fit:cover;border-radius:4px;">
+                  <% } else { %>
+                    <div style="width:60px;height:40px;background:#E5E7EB;border-radius:4px;display:flex;align-items:center;justify-content:center;">
+                      <span style="font-size:16px;">🎬</span>
+                    </div>
+                  <% } %>
+                </td>
+                <td style="max-width:200px;">
+                  <div style="font-weight:500;"><%= video.title %></div>
+                  <% if (video.description) { %>
+                    <div style="font-size:12px;color:#6B7280;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= video.description %></div>
+                  <% } %>
+                </td>
+                <td><%= video.category || '-' %></td>
+                <td>
+                  <% if (video.video_url) { %>
+                    <span class="status-badge status-approved">已上传</span>
+                  <% } else { %>
+                    <span style="color:#F59E0B;font-size:12px;">无视频</span>
+                  <% } %>
+                </td>
+                <td style="font-size:12px;color:#6B7280;"><%= video.created_at %></td>
+                <td>
+                  <div class="actions">
+                    <form method="POST" action="/admin/videos/<%= video.id %>/delete" style="display:inline;" onsubmit="return confirm('确定删除该视频吗？')">
+                      <button type="submit" class="action-btn action-btn-delete">删除</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              <% }); %>
+              <% if (videos.length === 0) { %>
+              <tr>
+                <td colspan="7" style="text-align:center;color:#9CA3AF;padding:40px;">暂无视频</td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 上传视频表单 -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title">上传视频</div>
+        </div>
+        <div class="admin-card-body">
+          <form method="POST" action="/admin/videos/new" enctype="multipart/form-data">
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>视频标题</label>
+                <input type="text" name="title" placeholder="视频标题" required>
+              </div>
+              <div class="admin-form-group">
+                <label>分类</label>
+                <input type="text" name="category" placeholder="视频分类">
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label>视频描述</label>
+              <textarea name="description" rows="3" placeholder="视频描述"></textarea>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>视频文件（仅MP4，大小不限）</label>
+                <input type="file" name="video" accept="video/mp4" required>
+              </div>
+              <div class="admin-form-group">
+                <label>封面图片</label>
+                <input type="file" name="thumbnail" accept="image/*">
+              </div>
+            </div>
+            <button type="submit" style="padding:10px 24px;background:#4F46E5;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;">上传视频</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

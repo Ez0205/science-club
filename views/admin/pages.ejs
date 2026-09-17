@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> - 管理后台</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <%- include('partials/sidebar') %>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="admin-topbar-title"><%= title %></div>
+      <div class="admin-topbar-right">
+        <a href="/" target="_blank" style="color:#6B7280;text-decoration:none;">查看网站</a>
+        <div class="admin-user-info">
+          <div class="admin-avatar"><%= user.real_name ? user.real_name[0] : 'A' %></div>
+          <span style="font-size:14px;"><%= user.real_name || user.username %></span>
+        </div>
+        <a href="/logout" style="color:#6B7280;text-decoration:none;font-size:14px;">退出</a>
+      </div>
+    </div>
+    <div class="admin-content">
+      <!-- 网站基本设置 -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title">🏠 网站基本设置</div>
+        </div>
+        <div class="admin-card-body">
+          <form method="POST" action="/admin/pages/settings">
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>站点名称</label>
+                <input type="text" name="site_name" value="<%= settings.site_name || '' %>">
+              </div>
+              <div class="admin-form-group">
+                <label>站点标语</label>
+                <input type="text" name="site_slogan" value="<%= settings.site_slogan || '' %>">
+              </div>
+            </div>
+
+            <div class="admin-form-group">
+              <label>社团介绍</label>
+              <textarea name="club_intro" rows="4"><%= settings.club_intro || '' %></textarea>
+            </div>
+
+            <div class="admin-form-group">
+              <label>社团目标</label>
+              <textarea name="club_goals" rows="3"><%= settings.club_goals || '' %></textarea>
+            </div>
+
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>指导老师</label>
+                <input type="text" name="teacher_info" value="<%= settings.teacher_info || '' %>">
+              </div>
+              <div class="admin-form-group">
+                <label>联系方式</label>
+                <input type="text" name="contact_info" value="<%= settings.contact_info || '' %>">
+              </div>
+            </div>
+
+            <div class="admin-form-group">
+              <label>版权信息</label>
+              <input type="text" name="copyright" value="<%= settings.copyright || '' %>">
+            </div>
+
+            <button type="submit" style="padding:10px 24px;background:#4F46E5;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;">保存设置</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- 导航菜单文字编辑 -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title">🧭 导航菜单文字编辑</div>
+        </div>
+        <div class="admin-card-body">
+          <form method="POST" action="/admin/pages/settings">
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>首页菜单名称</label>
+                <input type="text" name="nav_home" value="<%= settings.nav_home || '首页' %>">
+              </div>
+              <div class="admin-form-group">
+                <label>实验作品库菜单名称</label>
+                <input type="text" name="nav_works" value="<%= settings.nav_works || '实验作品库' %>">
+              </div>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>投稿上传菜单名称</label>
+                <input type="text" name="nav_submit" value="<%= settings.nav_submit || '投稿上传' %>">
+              </div>
+              <div class="admin-form-group">
+                <label>互动问答菜单名称</label>
+                <input type="text" name="nav_quiz" value="<%= settings.nav_quiz || '科学问答' %>">
+              </div>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>社团介绍菜单名称</label>
+                <input type="text" name="nav_about" value="<%= settings.nav_about || '社团介绍' %>">
+              </div>
+              <div class="admin-form-group">
+                <label>活动相册菜单名称</label>
+                <input type="text" name="nav_albums" value="<%= settings.nav_albums || '活动相册' %>">
+              </div>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>投票菜单名称</label>
+                <input type="text" name="nav_vote" value="<%= settings.nav_vote || '在线投票' %>">
+              </div>
+              <div class="admin-form-group">
+                <label>视频菜单名称</label>
+                <input type="text" name="nav_videos" value="<%= settings.nav_videos || '实验视频' %>">
+              </div>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>留言板菜单名称</label>
+                <input type="text" name="nav_messages" value="<%= settings.nav_messages || '留言板' %>">
+              </div>
+              <div class="admin-form-group">
+                <label>管理员登录文字</label>
+                <input type="text" name="nav_admin_login" value="<%= settings.nav_admin_login || '管理员登录' %>">
+              </div>
+            </div>
+            <button type="submit" style="padding:10px 24px;background:#4F46E5;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;">保存导航设置</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- 各板块标题文字编辑 -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title">📝 各板块标题文字编辑</div>
+        </div>
+        <div class="admin-card-body">
+          <form method="POST" action="/admin/pages/settings">
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>首页精选成果标题</label>
+                <input type="text" name="section_featured" value="<%= settings.section_featured || '精选成果' %>">
+              </div>
+              <div class="admin-form-group">
+                <label>首页作品分类墙标题</label>
+                <input type="text" name="section_works_wall" value="<%= settings.section_works_wall || '作品分类墙' %>">
+              </div>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>数据统计板块标题</label>
+                <input type="text" name="section_stats" value="<%= settings.section_stats || '数据统计' %>">
+              </div>
+              <div class="admin-form-group">
+                <label>留言板板块标题</label>
+                <input type="text" name="section_messages" value="<%= settings.section_messages || '留言板' %>">
+              </div>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>投票板块标题</label>
+                <input type="text" name="section_vote" value="<%= settings.section_vote || '月度最佳实验投票' %>">
+              </div>
+              <div class="admin-form-group">
+                <label>问答板块标题</label>
+                <input type="text" name="section_quiz" value="<%= settings.section_quiz || '科学小问答' %>">
+              </div>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>荣誉墙标题</label>
+                <input type="text" name="section_honors" value="<%= settings.section_honors || '荣誉墙' %>">
+              </div>
+              <div class="admin-form-group">
+                <label>活动日程标题</label>
+                <input type="text" name="section_events" value="<%= settings.section_events || '活动日程' %>">
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label>页脚标语</label>
+              <input type="text" name="footer_text" value="<%= settings.footer_text || '小小科学家・实验创想' %>">
+            </div>
+            <button type="submit" style="padding:10px 24px;background:#4F46E5;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;">保存板块文字</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- 轮播图管理 -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title">🖼️ 轮播图管理</div>
+        </div>
+        <div class="admin-card-body">
+          <!-- 轮播图列表 -->
+          <div style="margin-bottom:20px;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width:60px;">ID</th>
+                  <th>图片</th>
+                  <th>标题</th>
+                  <th>链接</th>
+                  <th>排序</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% banners.forEach(function(banner) { %>
+                <tr>
+                  <td><%= banner.id %></td>
+                  <td>
+                    <% if (banner.image_url) { %>
+                      <img src="<%= banner.image_url %>" style="width:80px;height:40px;object-fit:cover;border-radius:4px;">
+                    <% } else { %>
+                      <span style="color:#9CA3AF;font-size:12px;">无图</span>
+                    <% } %>
+                  </td>
+                  <td><%= banner.title %></td>
+                  <td style="font-size:12px;color:#6B7280;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= banner.link_url || '-' %></td>
+                  <td><%= banner.sort_order %></td>
+                  <td>
+                    <span class="status-badge <%= banner.is_active ? 'status-published' : 'status-rejected' %>">
+                      <%= banner.is_active ? '启用' : '禁用' %>
+                    </span>
+                  </td>
+                  <td>
+                    <form method="POST" action="/admin/pages/banner/<%= banner.id %>/delete" style="display:inline;" onsubmit="return confirm('确定删除该轮播图吗？')">
+                      <button type="submit" class="action-btn action-btn-delete">删除</button>
+                    </form>
+                  </td>
+                </tr>
+                <% }); %>
+                <% if (banners.length === 0) { %>
+                <tr>
+                  <td colspan="7" style="text-align:center;color:#9CA3AF;padding:20px;">暂无轮播图</td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 添加轮播图表单 -->
+          <div style="border-top:1px solid #E5E7EB;padding-top:20px;">
+            <h4 style="margin:0 0 15px;font-size:14px;color:#374151;">添加轮播图</h4>
+            <form method="POST" action="/admin/pages/banner" enctype="multipart/form-data">
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label>标题</label>
+                  <input type="text" name="title" placeholder="轮播图标题" required>
+                </div>
+                <div class="admin-form-group">
+                  <label>跳转链接</label>
+                  <input type="text" name="link_url" placeholder="点击跳转的链接（可选）">
+                </div>
+              </div>
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label>图片上传</label>
+                  <input type="file" name="image" accept="image/*" required>
+                </div>
+                <div class="admin-form-group">
+                  <label>排序（数字越小越靠前）</label>
+                  <input type="number" name="sort_order" value="0">
+                </div>
+              </div>
+              <button type="submit" style="padding:8px 20px;background:#10B981;color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;">添加轮播图</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- 公告管理 -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title">📢 公告管理</div>
+        </div>
+        <div class="admin-card-body">
+          <!-- 公告列表 -->
+          <div style="margin-bottom:20px;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width:60px;">ID</th>
+                  <th>公告内容</th>
+                  <th>排序</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% announcements.forEach(function(ann) { %>
+                <tr>
+                  <td><%= ann.id %></td>
+                  <td><%= ann.content %></td>
+                  <td><%= ann.sort_order %></td>
+                  <td>
+                    <span class="status-badge <%= ann.is_active ? 'status-published' : 'status-rejected' %>">
+                      <%= ann.is_active ? '启用' : '禁用' %>
+                    </span>
+                  </td>
+                  <td>
+                    <form method="POST" action="/admin/pages/announcement/<%= ann.id %>/delete" style="display:inline;" onsubmit="return confirm('确定删除该公告吗？')">
+                      <button type="submit" class="action-btn action-btn-delete">删除</button>
+                    </form>
+                  </td>
+                </tr>
+                <% }); %>
+                <% if (announcements.length === 0) { %>
+                <tr>
+                  <td colspan="5" style="text-align:center;color:#9CA3AF;padding:20px;">暂无公告</td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 添加公告表单 -->
+          <div style="border-top:1px solid #E5E7EB;padding-top:20px;">
+            <h4 style="margin:0 0 15px;font-size:14px;color:#374151;">添加公告</h4>
+            <form method="POST" action="/admin/pages/announcement">
+              <div class="admin-form-row">
+                <div class="admin-form-group" style="grid-column:span 2;">
+                  <label>公告内容</label>
+                  <input type="text" name="content" placeholder="请输入公告内容" required>
+                </div>
+              </div>
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label>排序（数字越小越靠前）</label>
+                  <input type="number" name="sort_order" value="0">
+                </div>
+              </div>
+              <button type="submit" style="padding:8px 20px;background:#10B981;color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;">添加公告</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

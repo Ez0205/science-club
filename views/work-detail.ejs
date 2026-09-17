@@ -1,0 +1,252 @@
+<%- include('partials/header') %>
+
+    <section class="section">
+      <div class="container">
+        <!-- 作品详情主体 -->
+        <div class="work-detail">
+          <div class="work-detail-header">
+            <h1 class="work-detail-title"><%= work.title %></h1>
+            <div class="work-detail-info">
+              <span>👤 作者：<%= work.author %></span>
+              <span>🏫 班级：<%= work.class || '未填写' %></span>
+              <span>
+                <span class="tag tag-<%= work.category %>"><%= work.category %></span>
+              </span>
+              <span>📅 <%= work.created_at ? new Date(work.created_at).toLocaleDateString('zh-CN') : '' %></span>
+            </div>
+          </div>
+
+          <!-- 实验简介 -->
+          <% if (work.summary) { %>
+          <div class="work-detail-section">
+            <h3>实验简介</h3>
+            <p><%= work.summary %></p>
+          </div>
+          <% } %>
+
+          <!-- 图片画廊 -->
+          <% if (images && images.length > 0) { %>
+          <div class="work-detail-section">
+            <h3>实验图片</h3>
+            <div class="image-gallery">
+              <% images.forEach(function(img, index) { %>
+                <img src="<%= img %>" alt="实验图片 <%= index + 1 %>" class="zoomable" onclick="openImageModal('<%= img %>')">
+              <% }) %>
+            </div>
+          </div>
+          <% } %>
+
+          <!-- 视频播放区 -->
+          <% if (work.video_url) { %>
+          <div class="work-detail-section">
+            <h3>实验视频</h3>
+            <div class="video-player">
+              <video controls controlslist="nodownload">
+                <source src="<%= work.video_url %>" type="video/mp4">
+                您的浏览器不支持视频播放。
+              </video>
+            </div>
+          </div>
+          <% } %>
+
+          <!-- 实验原理 -->
+          <% if (work.principle) { %>
+          <div class="work-detail-section">
+            <h3>实验原理</h3>
+            <p><%= work.principle %></p>
+          </div>
+          <% } %>
+
+          <!-- 实验反思 -->
+          <% if (work.reflection) { %>
+          <div class="work-detail-section">
+            <h3>实验反思</h3>
+            <p><%= work.reflection %></p>
+          </div>
+          <% } %>
+
+          <!-- 点赞和浏览量 -->
+          <div class="interaction-bar">
+            <button class="like-btn <%= hasLiked ? 'liked' : '' %>" id="likeBtn" onclick="toggleLike()">
+              <span id="likeIcon"><%= hasLiked ? '❤️' : '🤍' %></span>
+              <span id="likeCount"><%= work.likes || 0 %></span>
+            </button>
+            <span class="view-count">👁️ 浏览量：<%= work.views || 0 %></span>
+          </div>
+        </div>
+
+        <!-- 评论区 -->
+        <div class="comments-section">
+          <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">💬 评论 (<span id="commentCount"><%= comments.length %></span>)</h3>
+          
+          <!-- 发表评论表单 -->
+          <div class="comment-form">
+            <textarea id="commentContent" placeholder="写下你的评论..."></textarea>
+            <div class="comment-form-inputs">
+              <input type="text" id="commentAuthor" placeholder="你的昵称">
+              <button class="btn btn-primary" onclick="submitComment()">发表评论</button>
+            </div>
+          </div>
+
+          <!-- 评论列表 -->
+          <div class="comment-list" id="commentList">
+            <% if (comments && comments.length > 0) { %>
+              <% comments.forEach(function(comment) { %>
+                <div class="comment-item">
+                  <div class="comment-avatar"><%= comment.author_name ? comment.author_name.charAt(0).toUpperCase() : '?' %></div>
+                  <div class="comment-content">
+                    <div class="comment-author"><%= comment.author_name %></div>
+                    <div class="comment-text"><%= comment.content %></div>
+                    <div class="comment-time"><%= comment.created_at ? new Date(comment.created_at).toLocaleString('zh-CN') : '' %></div>
+                  </div>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <p style="text-align: center; color: var(--text-light); padding: 20px 0;">暂无评论，快来抢沙发吧！</p>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- 相关作品推荐 -->
+        <% if (relatedWorks && relatedWorks.length > 0) { %>
+        <div class="section" style="padding: 30px 0 0;">
+          <div class="section-header">
+            <h2 class="section-title">相关作品推荐</h2>
+            <div class="section-more"><a href="/works?category=<%= encodeURIComponent(work.category) %>">更多 →</a></div>
+          </div>
+          <div class="works-grid">
+            <% relatedWorks.forEach(function(rw) { %>
+              <div class="work-card" onclick="location.href='/works/<%= rw.id %>'">
+                <div class="work-card-image">
+                  <% if (rw.cover_image) { %>
+                    <img src="<%= rw.cover_image %>" alt="<%= rw.title %>">
+                  <% } else { %>
+                    <img src="https://picsum.photos/400/300?random=<%= rw.id + 500 %>" alt="<%= rw.title %>">
+                  <% } %>
+                  <div class="work-card-badge">
+                    <span class="tag tag-<%= rw.category %>"><%= rw.category %></span>
+                  </div>
+                </div>
+                <div class="work-card-body">
+                  <h3 class="work-card-title"><%= rw.title %></h3>
+                  <div class="work-card-meta">
+                    <span class="work-card-author">👤 <%= rw.author %></span>
+                    <span class="work-card-stats">
+                      <span>👍 <%= rw.likes || 0 %></span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </section>
+
+    <script>
+      // 点赞功能
+      function toggleLike() {
+        const workId = <%= work.id %>;
+        fetch('/works/' + workId + '/like', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'same-origin'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const likeBtn = document.getElementById('likeBtn');
+            const likeIcon = document.getElementById('likeIcon');
+            const likeCount = document.getElementById('likeCount');
+            
+            if (data.liked) {
+              likeBtn.classList.add('liked');
+              likeIcon.textContent = '❤️';
+            } else {
+              likeBtn.classList.remove('liked');
+              likeIcon.textContent = '🤍';
+            }
+            likeCount.textContent = data.likes;
+          } else {
+            alert(data.message || '操作失败');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert('操作失败，请稍后重试');
+        });
+      }
+
+      // 发表评论
+      function submitComment() {
+        const workId = <%= work.id %>;
+        const authorName = document.getElementById('commentAuthor').value.trim();
+        const content = document.getElementById('commentContent').value.trim();
+        
+        if (!authorName) {
+          alert('请填写昵称');
+          return;
+        }
+        if (!content) {
+          alert('请填写评论内容');
+          return;
+        }
+        
+        fetch('/works/' + workId + '/comment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            author_name: authorName,
+            content: content
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            // 添加评论到列表
+            const commentList = document.getElementById('commentList');
+            const commentCount = document.getElementById('commentCount');
+            
+            const commentHtml = `
+              <div class="comment-item">
+                <div class="comment-avatar">${authorName.charAt(0).toUpperCase()}</div>
+                <div class="comment-content">
+                  <div class="comment-author">${authorName}</div>
+                  <div class="comment-text">${data.comment.content}</div>
+                  <div class="comment-time">${data.comment.created_at}</div>
+                </div>
+              </div>
+            `;
+            
+            // 检查是否有"暂无评论"的提示
+            const emptyMsg = commentList.querySelector('p');
+            if (emptyMsg) {
+              commentList.innerHTML = commentHtml;
+            } else {
+              commentList.insertAdjacentHTML('afterbegin', commentHtml);
+            }
+            
+            // 更新评论数
+            const currentCount = parseInt(commentCount.textContent) || 0;
+            commentCount.textContent = currentCount + 1;
+            
+            // 清空输入框
+            document.getElementById('commentContent').value = '';
+          } else {
+            alert(data.message || '评论失败');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert('评论失败，请稍后重试');
+        });
+      }
+    </script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> - 管理后台</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <%- include('partials/sidebar') %>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="admin-topbar-title"><%= title %></div>
+      <div class="admin-topbar-right">
+        <a href="/" target="_blank" style="color:#6B7280;text-decoration:none;">查看网站</a>
+        <div class="admin-user-info">
+          <div class="admin-avatar"><%= user.real_name ? user.real_name[0] : 'A' %></div>
+          <span style="font-size:14px;"><%= user.real_name || user.username %></span>
+        </div>
+        <a href="/logout" style="color:#6B7280;text-decoration:none;font-size:14px;">退出</a>
+      </div>
+    </div>
+    <div class="admin-content">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title">新建投票</div>
+          <a href="/admin/votes" style="color:#6B7280;text-decoration:none;font-size:13px;">← 返回列表</a>
+        </div>
+        <div class="admin-card-body">
+          <form method="POST" action="/admin/votes/new">
+            <div class="admin-form-group">
+              <label>投票标题</label>
+              <input type="text" name="title" placeholder="请输入投票标题" required>
+            </div>
+
+            <div class="admin-form-group">
+              <label>投票描述</label>
+              <textarea name="description" rows="3" placeholder="请输入投票描述（可选）"></textarea>
+            </div>
+
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label>开始日期</label>
+                <input type="date" name="start_date" required>
+              </div>
+              <div class="admin-form-group">
+                <label>结束日期</label>
+                <input type="date" name="end_date" required>
+              </div>
+            </div>
+
+            <div class="admin-form-group">
+              <label>选择候选作品（可多选）</label>
+              <div style="max-height:300px;overflow-y:auto;border:1px solid #E5E7EB;border-radius:6px;padding:10px;">
+                <% if (works.length > 0) { %>
+                  <% works.forEach(function(work) { %>
+                    <label style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer;border-bottom:1px solid #F3F4F6;">
+                      <input type="checkbox" name="work_ids" value="<%= work.id %>">
+                      <span style="font-size:13px;"><%= work.title %></span>
+                    </label>
+                  <% }); %>
+                <% } else { %>
+                  <div style="color:#9CA3AF;text-align:center;padding:20px;">暂无已发布作品</div>
+                <% } %>
+              </div>
+              <div style="font-size:12px;color:#6B7280;margin-top:6px;">已发布作品共 <%= works.length %> 个</div>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:25px;">
+              <button type="submit" style="padding:10px 24px;background:#4F46E5;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;">创建投票</button>
+              <a href="/admin/votes" style="padding:10px 24px;background:#E5E7EB;color:#374151;border:none;border-radius:6px;cursor:pointer;font-size:14px;text-decoration:none;">取消</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

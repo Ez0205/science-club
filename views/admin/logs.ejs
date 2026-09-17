@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> - 管理后台</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <%- include('partials/sidebar') %>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="admin-topbar-title"><%= title %></div>
+      <div class="admin-topbar-right">
+        <a href="/" target="_blank" style="color:#6B7280;text-decoration:none;">查看网站</a>
+        <div class="admin-user-info">
+          <div class="admin-avatar"><%= user.real_name ? user.real_name[0] : 'A' %></div>
+          <span style="font-size:14px;"><%= user.real_name || user.username %></span>
+        </div>
+        <a href="/logout" style="color:#6B7280;text-decoration:none;font-size:14px;">退出</a>
+      </div>
+    </div>
+    <div class="admin-content">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title">操作日志</div>
+          <div style="font-size:13px;color:#6B7280;">最近 <%= logs.length %> 条记录（最多显示200条）</div>
+        </div>
+        <div class="admin-card-body" style="padding:0;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width:60px;">ID</th>
+                <th style="width:170px;">时间</th>
+                <th style="width:120px;">用户</th>
+                <th style="width:120px;">操作</th>
+                <th style="width:150px;">目标</th>
+                <th>详情</th>
+                <th style="width:130px;">IP地址</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% logs.forEach(function(log) { %>
+              <tr>
+                <td><%= log.id %></td>
+                <td style="font-size:12px;color:#6B7280;"><%= log.created_at %></td>
+                <td>
+                  <span style="font-weight:500;color:#4F46E5;"><%= log.username || '系统' %></span>
+                </td>
+                <td>
+                  <span class="status-badge" style="background:#EDE9FE;color:#5B21B6;"><%= log.action %></span>
+                </td>
+                <td style="font-size:13px;"><%= log.target || '-' %></td>
+                <td style="font-size:13px;color:#374151;max-width:300px;">
+                  <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= log.detail || '-' %></div>
+                </td>
+                <td style="font-size:12px;color:#6B7280;font-family:monospace;"><%= log.ip_address || '-' %></td>
+              </tr>
+              <% }); %>
+              <% if (logs.length === 0) { %>
+              <tr>
+                <td colspan="7" style="text-align:center;color:#9CA3AF;padding:40px;">暂无操作日志</td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

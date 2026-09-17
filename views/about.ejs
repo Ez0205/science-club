@@ -1,0 +1,224 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">我们的社团</h2>
+      <p style="color:var(--text-light);font-size:15px;">探索不同领域的科学奥秘，找到你最感兴趣的社团</p>
+    </div>
+    
+    <!-- 社团卡片网格 -->
+    <div class="clubs-grid">
+      <% clubs.forEach(function(club, index) { %>
+        <a href="/clubs/<%= club.id %>" class="club-card fade-in" style="animation-delay: <%= index * 0.1 %>s;">
+          <div class="club-card-cover">
+            <% if (club.cover_image) { %>
+              <img src="<%= club.cover_image %>" alt="<%= club.name %>">
+            <% } else { %>
+              <div class="club-card-cover-placeholder">
+                <span style="font-size:60px;"><%= club.logo_image || '🎯' %></span>
+              </div>
+            <% } %>
+            <div class="club-card-overlay">
+              <span class="club-card-logo"><%= club.logo_image || '🎯' %></span>
+            </div>
+          </div>
+          <div class="club-card-body">
+            <h3 class="club-card-title"><%= club.name %></h3>
+            <p class="club-card-slogan"><%= club.slogan %></p>
+            <p class="club-card-desc"><%= club.description.substring(0, 80) %>...</p>
+            <div class="club-card-footer">
+              <span class="club-card-teachers">👨‍🏫 <%= club.teachers ? club.teachers.split('、')[0] : '专业老师' %></span>
+              <span class="club-card-more">了解详情 →</span>
+            </div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+    
+    <!-- 活动日程 -->
+    <div id="events" style="margin-top:60px;">
+      <div class="section-header">
+        <h2 class="section-title">活动日程</h2>
+      </div>
+      <div class="about-section">
+        <div class="timeline">
+          <% events.forEach(function(event) { %>
+            <div class="timeline-item">
+              <div class="timeline-date">
+                📅 <%= event.event_date %> 
+                <% if (event.is_past) { %>
+                  <span style="color:#9CA3AF;font-weight:normal;">（已举办）</span>
+                <% } else { %>
+                  <span style="color:var(--secondary);font-weight:normal;">（即将到来）</span>
+                <% } %>
+              </div>
+              <div class="timeline-title"><%= event.title %></div>
+              <div class="timeline-desc">
+                📍 <%= event.location || '待定' %>
+                <% if (event.description) { %>
+                  &nbsp;|&nbsp; <%= event.description %>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 荣誉墙 -->
+    <div id="honors" style="margin-top:60px;">
+      <div class="section-header">
+        <h2 class="section-title">荣誉墙</h2>
+      </div>
+      <div class="honors-grid">
+        <% honors.forEach(function(honor) { %>
+          <div class="honor-card">
+            <% if (honor.certificate_image) { %>
+              <img src="<%= honor.certificate_image %>" alt="<%= honor.title %>" class="honor-image zoomable">
+            <% } else { %>
+              <div style="height:150px;background:linear-gradient(135deg,#FCD34D,#F59E0B);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:15px;">🏆</div>
+            <% } %>
+            <div class="honor-title"><%= honor.title %></div>
+            <div class="honor-date"><%= honor.award_date %></div>
+            <% if (honor.description) { %>
+              <p style="font-size:13px;color:var(--text-light);margin-top:5px;"><%= honor.description %></p>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.clubs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.club-card {
+  display: block;
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-decoration: none;
+  color: inherit;
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.club-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  color: inherit;
+}
+
+.club-card-cover {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+.club-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.club-card:hover .club-card-cover img {
+  transform: scale(1.08);
+}
+
+.club-card-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.club-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+}
+
+.club-card-logo {
+  font-size: 36px;
+}
+
+.club-card-body {
+  padding: 20px;
+}
+
+.club-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.club-card-slogan {
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.club-card-desc {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.club-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.club-card-teachers {
+  color: var(--text-light);
+}
+
+.club-card-more {
+  color: var(--primary);
+  font-weight: 500;
+  transition: transform 0.2s;
+}
+
+.club-card:hover .club-card-more {
+  transform: translateX(4px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .clubs-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .club-card-cover {
+    height: 150px;
+  }
+}
+</style>
+
+<%- include('partials/footer') %>
